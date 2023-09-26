@@ -3,7 +3,7 @@ import 'package:real_time_mobile_app/src/models/models.dart';
 import 'package:real_time_mobile_app/src/screen/screen.dart';
 
 class AppRoutes {
-  static const String initialRoute = "login";
+  static const String initialRoute = "home";
 
   static final Map<String, List<RouteItem>> routes = {
     'root': [
