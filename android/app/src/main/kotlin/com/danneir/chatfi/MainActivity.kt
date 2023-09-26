@@ -1,4 +1,4 @@
-package com.example.real_time_mobile_app
+package com.danneir.chatfi
 
 import io.flutter.embedding.android.FlutterActivity
 
