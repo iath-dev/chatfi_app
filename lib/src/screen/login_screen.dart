@@ -52,6 +52,9 @@ class _Form extends StatefulWidget {
 }
 
 class _FormState extends State<_Form> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
   bool loading = false;
 
   @override
@@ -60,16 +63,18 @@ class _FormState extends State<_Form> {
       width: 250,
       child: Column(children: [
         TextField(
+            controller: emailController,
             keyboardType: TextInputType.emailAddress,
             decoration: _customInputDecoration(Icons.alternate_email, 'Email')),
         const SizedBox(height: 30),
         TextField(
+          controller: passwordController,
           obscureText: true,
           decoration: _customInputDecoration(Icons.lock_open, 'Password'),
         ),
         const SizedBox(height: 30),
         ElevatedButton.icon(
-          onPressed: () {},
+          onPressed: _submitForm,
           icon: loading
               ? const SizedBox(
                   height: 14,
@@ -84,11 +89,17 @@ class _FormState extends State<_Form> {
     );
   }
 
+  void _submitForm() {
+    print(
+        'email: ${emailController.text}, password: ${passwordController.text}');
+  }
+
   InputDecoration _customInputDecoration(IconData icon, String hint) {
     return InputDecoration(
         suffixIcon: Icon(icon),
         labelText: hint,
         filled: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         fillColor: Colors.white,
         border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8))));
