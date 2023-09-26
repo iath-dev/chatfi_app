@@ -6,9 +6,9 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade50,
-      body: const SafeArea(
+    return const Scaffold(
+      // backgroundColor: Colors.grey.shade50,
+      body: SafeArea(
         child: SingleChildScrollView(
             physics: BouncingScrollPhysics(), child: _Content()),
       ),
@@ -104,7 +104,7 @@ class _FormState extends State<_Form> {
         suffixIcon: Icon(icon),
         labelText: hint,
         filled: true,
-        fillColor: Colors.white,
+        // fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8))));

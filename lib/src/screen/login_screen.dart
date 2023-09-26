@@ -6,9 +6,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade50,
-      body: const SafeArea(
+    return const Scaffold(
+      body: SafeArea(
         child: SingleChildScrollView(
             physics: BouncingScrollPhysics(), child: _Content()),
       ),
@@ -100,7 +99,7 @@ class _FormState extends State<_Form> {
         labelText: hint,
         filled: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        fillColor: Colors.white,
+        // fillColor: Colors.white,
         border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8))));
   }

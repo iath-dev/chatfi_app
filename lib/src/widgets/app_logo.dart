@@ -22,7 +22,8 @@ class AppLogo extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                  fontSize: 35, color: Theme.of(context).primaryColor),
+                  fontSize: 35,
+                  color: Theme.of(context).colorScheme.onBackground),
             )
         ],
       ),
