@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:real_time_mobile_app/src/router/router.dart';
 import 'package:real_time_mobile_app/theme/theme.dart';
 
 void main() {
@@ -15,11 +16,9 @@ class MainApp extends StatelessWidget {
       theme: AppTheme.theme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+      initialRoute: AppRoutes.initialRoute,
+      routes: AppRoutes.getAppRoutes(),
+      onGenerateRoute: AppRoutes.onGenerateRoute,
     );
   }
 }
