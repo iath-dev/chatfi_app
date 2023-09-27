@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:real_time_mobile_app/src/router/router.dart';
+import 'package:real_time_mobile_app/src/services/auth_service.dart';
 import 'package:real_time_mobile_app/theme/theme.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const AppState());
+}
+
+class AppState extends StatelessWidget {
+  const AppState({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+        providers: [ChangeNotifierProvider(create: (_) => AuthService())],
+        child: const MainApp());
+  }
 }
 
 class MainApp extends StatelessWidget {

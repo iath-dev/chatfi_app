@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:real_time_mobile_app/src/services/auth_service.dart';
 import 'package:real_time_mobile_app/src/widgets/widgets.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -72,25 +74,46 @@ class _FormState extends State<_Form> {
           decoration: _customInputDecoration(Icons.lock_open, 'Password'),
         ),
         const SizedBox(height: 30),
-        ElevatedButton.icon(
-          onPressed: _submitForm,
-          icon: loading
+        ElevatedButton(
+          onPressed: !loading ? _submitForm : null,
+          style:
+              ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(40)),
+          child: loading
               ? const SizedBox(
                   height: 14,
                   width: 14,
                   child: CircularProgressIndicator(strokeWidth: 2))
-              : const Icon(Icons.login),
-          style:
-              ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(40)),
-          label: const Text('Ingresar'),
+              : const Text('Ingresar'),
         )
       ]),
     );
   }
 
-  void _submitForm() {
-    print(
-        'email: ${emailController.text}, password: ${passwordController.text}');
+  _submitForm() async {
+    setState(() {
+      loading = true;
+    });
+
+    final authService = Provider.of<AuthService>(context, listen: false);
+
+    final res =
+        await authService.login(emailController.text, passwordController.text);
+
+    emailController.clear();
+    passwordController.clear();
+
+    setState(() {
+      loading = false;
+    });
+
+    FocusScope.of(context).unfocus();
+
+    if (res) {
+      Navigator.pushReplacementNamed(context, 'home');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error: Información invalida')));
+    }
   }
 
   InputDecoration _customInputDecoration(IconData icon, String hint) {

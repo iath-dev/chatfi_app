@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:real_time_mobile_app/src/models/models.dart';
+import 'package:real_time_mobile_app/src/services/auth_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -7,22 +9,18 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final users = <UserModel>[
-      UserModel(
-          online: true, name: 'Daniel', email: 'daniel@gmail.com', uid: '123'),
-      UserModel(
-          online: true, name: 'Natalia', email: 'nata@gmail.com', uid: '456'),
-      UserModel(
-          online: false, name: 'David', email: 'david@gmail.com', uid: '789'),
-      UserModel(
-          online: true, name: 'Marcos', email: 'marc@gmail.com', uid: '741'),
-      UserModel(online: false, name: 'Leo', email: 'leo@gmail.com', uid: '852'),
+      UserModel(name: 'Daniel', email: 'daniel@gmail.com', uid: '123'),
+      UserModel(name: 'Natalia', email: 'nata@gmail.com', uid: '456'),
+      UserModel(name: 'David', email: 'david@gmail.com', uid: '789'),
+      UserModel(name: 'Marcos', email: 'marc@gmail.com', uid: '741'),
+      UserModel(name: 'Leo', email: 'leo@gmail.com', uid: '852'),
     ];
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bienvenido'),
         leading: IconButton(
-            onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
+            onPressed: () => _handleLogout(context),
             icon: const Icon(Icons.exit_to_app)),
         actions: const [
           Padding(
@@ -41,6 +39,13 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future _handleLogout(BuildContext context) async {
+    final authService = Provider.of<AuthService>(context, listen: false);
+
+    authService.logout();
+    Navigator.pushReplacementNamed(context, 'login');
   }
 }
 
@@ -61,7 +66,9 @@ class _UserItem extends StatelessWidget {
           width: 10,
           decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: user.online ? Colors.green : Colors.red),
+              color: user.online == ConnectionStatus.Online
+                  ? Colors.green
+                  : Colors.red),
         ),
         // dense: true,
         onTap: () => Navigator.pushNamed(context, 'chat'),
