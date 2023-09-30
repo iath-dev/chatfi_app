@@ -7,9 +7,11 @@ import 'package:real_time_mobile_app/src/models/models.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService extends ChangeNotifier {
-  late UserModel user;
+  late UserModel _user;
 
   final _storage = const FlutterSecureStorage();
+
+  UserModel get user => _user;
 
   static Future<String?> getToken() async {
     const storage = FlutterSecureStorage();
@@ -27,7 +29,7 @@ class AuthService extends ChangeNotifier {
 
     final response = LoginAuthResponse.fromRawJson(res.body);
 
-    user = response.data;
+    _user = response.data;
 
     await _storage.write(key: 'token', value: response.accessToken);
 
@@ -45,7 +47,7 @@ class AuthService extends ChangeNotifier {
 
     final response = LoginAuthResponse.fromRawJson(res.body);
 
-    user = response.data;
+    _user = response.data;
 
     await _storage.write(key: 'token', value: response.accessToken);
 
@@ -66,7 +68,7 @@ class AuthService extends ChangeNotifier {
 
     final response = LoginAuthResponse.fromRawJson(res.body);
 
-    user = response.data;
+    _user = response.data;
 
     await _storage.write(key: 'token', value: response.accessToken);
 

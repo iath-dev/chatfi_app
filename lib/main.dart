@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:real_time_mobile_app/src/router/router.dart';
-import 'package:real_time_mobile_app/src/services/auth_service.dart';
+import 'package:real_time_mobile_app/src/services/services.dart';
 import 'package:real_time_mobile_app/theme/theme.dart';
 
 void main() {
@@ -15,9 +15,11 @@ class AppState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [ChangeNotifierProvider(create: (_) => AuthService())],
-        child: const MainApp());
+    return MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => AuthService()),
+      ChangeNotifierProvider(create: (_) => ChatService()),
+      ChangeNotifierProvider(create: (_) => SocketService())
+    ], child: const MainApp());
   }
 }
 

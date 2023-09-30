@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:real_time_mobile_app/src/services/auth_service.dart';
+import 'package:real_time_mobile_app/src/services/services.dart';
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({Key? key}) : super(key: key);
@@ -28,11 +28,13 @@ class LoadingScreen extends StatelessWidget {
   }
 
   Future _validToken(BuildContext context) async {
-    final authService = Provider.of<AuthService>(context);
+    final authService = Provider.of<AuthService>(context, listen: false);
+    final socketService = Provider.of<SocketService>(context, listen: false);
 
     final res = await authService.isLoggedIn();
 
     if (res) {
+      socketService.connect();
       Navigator.pushReplacementNamed(context, 'home');
     } else {
       Navigator.pushReplacementNamed(context, 'login');

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:real_time_mobile_app/src/services/services.dart';
 import 'package:real_time_mobile_app/src/widgets/widgets.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -6,18 +8,26 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chatService = Provider.of<ChatService>(context);
+
+    final user = chatService.user;
+
+    if (user == null) {
+      Navigator.pushReplacementNamed(context, 'loading');
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
               maxRadius: 18,
-              child: Text('ab'),
+              child: Text(user!.name.substring(0, 2)),
             ),
-            SizedBox(width: 12),
+            const SizedBox(width: 8),
             Text(
-              'Nombre',
+              user.name,
               overflow: TextOverflow.ellipsis,
             ),
           ],

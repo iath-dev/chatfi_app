@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:real_time_mobile_app/src/services/auth_service.dart';
+import 'package:real_time_mobile_app/src/services/services.dart';
 import 'package:real_time_mobile_app/src/widgets/widgets.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -95,6 +95,7 @@ class _FormState extends State<_Form> {
     });
 
     final authService = Provider.of<AuthService>(context, listen: false);
+    final socketService = Provider.of<SocketService>(context, listen: false);
 
     final res =
         await authService.login(emailController.text, passwordController.text);
@@ -109,6 +110,7 @@ class _FormState extends State<_Form> {
     FocusScope.of(context).unfocus();
 
     if (res) {
+      socketService.connect();
       Navigator.pushReplacementNamed(context, 'home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
