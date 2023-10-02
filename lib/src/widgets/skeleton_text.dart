@@ -47,7 +47,7 @@ class _SkeletonTextState extends State<SkeletonText>
                 end: const Alignment(-1, 0),
                 colors: const [
               Colors.black12,
-              Colors.black26,
+              Colors.white24,
               Colors.black12
             ])),
       ),

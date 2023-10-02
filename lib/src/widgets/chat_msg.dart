@@ -1,5 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:real_time_mobile_app/src/services/services.dart';
 
 class ChatMessage extends StatelessWidget {
   final String message, uid;
@@ -8,19 +10,18 @@ class ChatMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isOwn = int.parse(uid).isEven;
+    final authService = Provider.of<AuthService>(context);
+    final isOwn = authService.user.uid == uid;
 
-    return isOwn
-        ? _MessageBubble(
-            message: message,
-            align: Alignment.centerRight,
-            color: Theme.of(context).colorScheme.primaryContainer,
-            textColor: Theme.of(context).colorScheme.onPrimaryContainer)
-        : _MessageBubble(
-            message: message,
-            align: Alignment.centerLeft,
-            color: Theme.of(context).colorScheme.tertiaryContainer,
-            textColor: Theme.of(context).colorScheme.onTertiaryContainer);
+    return _MessageBubble(
+        message: message,
+        align: isOwn ? Alignment.centerRight : Alignment.centerLeft,
+        color: isOwn
+            ? Theme.of(context).colorScheme.primaryContainer
+            : Theme.of(context).colorScheme.tertiaryContainer,
+        textColor: isOwn
+            ? Theme.of(context).colorScheme.onPrimaryContainer
+            : Theme.of(context).colorScheme.onTertiaryContainer);
   }
 }
 

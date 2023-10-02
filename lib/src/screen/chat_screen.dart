@@ -1,21 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:real_time_mobile_app/src/models/models.dart';
 import 'package:real_time_mobile_app/src/services/services.dart';
 import 'package:real_time_mobile_app/src/widgets/widgets.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final chatService = Provider.of<ChatService>(context);
+  State<ChatScreen> createState() => _ChatScreenState();
+}
 
-    final user = chatService.user;
+class _ChatScreenState extends State<ChatScreen> {
+  late UserModel user;
+  late ChatService chatService;
+  late SocketService socketService;
 
-    if (user == null) {
+  List<ChatMessage> messages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    chatService = Provider.of<ChatService>(context, listen: false);
+    socketService = Provider.of<SocketService>(context, listen: false);
+
+    if (chatService.user == null) {
       Navigator.pushReplacementNamed(context, 'loading');
     }
 
+    user = chatService.user!;
+
+    socketService.socket.on('message', _listenMessage);
+
+    chatService.getChatHistory(user.uid).then((value) {
+      setState(() {
+        messages = value.data
+            .map((e) => ChatMessage(message: e.message, uid: e.from))
+            .toList();
+      });
+    });
+  }
+
+  _listenMessage(dynamic data) {
+    final input = InputMessage.fromJson(data);
+
+    ChatMessage msg = ChatMessage(message: input.message, uid: input.from);
+
+    setState(() {
+      messages.insert(0, msg);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -23,7 +60,7 @@ class ChatScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               maxRadius: 18,
-              child: Text(user!.name.substring(0, 2)),
+              child: Text(user.name.substring(0, 2)),
             ),
             const SizedBox(width: 8),
             Text(
@@ -38,17 +75,19 @@ class ChatScreen extends StatelessWidget {
           Flexible(
             child: ListView.separated(
               physics: const BouncingScrollPhysics(),
-              itemCount: 200,
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemCount: messages.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
               reverse: true,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              itemBuilder: (context, index) => ChatMessage(
-                  message:
-                      'Lorem do consequat voluptate irure quis ipsum nisi ullamco Lorem consectetur duis officia.',
-                  uid: '$index'),
+              itemBuilder: (_, index) => messages[index],
             ),
           ),
-          const _MessageInputBox()
+          _MessageInputBox(onSubmit: (msg) {
+            setState(() {
+              messages.insert(
+                  0, ChatMessage(message: msg.message, uid: msg.from));
+            });
+          })
         ],
       ),
     );
@@ -56,9 +95,8 @@ class ChatScreen extends StatelessWidget {
 }
 
 class _MessageInputBox extends StatefulWidget {
-  const _MessageInputBox({
-    super.key,
-  });
+  final Function(InputMessage msg) onSubmit;
+  const _MessageInputBox({super.key, required this.onSubmit});
 
   @override
   State<_MessageInputBox> createState() => _MessageInputBoxState();
@@ -100,9 +138,21 @@ class _MessageInputBoxState extends State<_MessageInputBox> {
   void _handleSubmit(String value) {
     if (value.isEmpty) return;
 
-    print('msg: ${_controller.text}');
+    final socketService = Provider.of<SocketService>(context, listen: false);
+    final authService = Provider.of<AuthService>(context, listen: false);
+    final chatService = Provider.of<ChatService>(context, listen: false);
 
     _controller.clear();
     _focus.requestFocus();
+
+    final msg = {
+      'from': authService.user.uid,
+      'to': chatService.user!.uid,
+      'message': value
+    };
+
+    socketService.socket.emit('message', msg);
+
+    widget.onSubmit(InputMessage.fromJson(msg));
   }
 }
